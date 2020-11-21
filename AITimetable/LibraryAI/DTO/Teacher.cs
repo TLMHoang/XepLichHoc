@@ -12,6 +12,7 @@ namespace LibraryAI
         public int ID { get; set; }
         public string Name { get; set; }
         public int IDSubject { get; set; }
+        public List<int> Class { get; set; }
         public int[][] Timetable { get; set; }
 
         public Teacher() { }
@@ -30,10 +31,10 @@ namespace LibraryAI
             Name = name;
             IDSubject = iDSubject;
             Timetable = new int[7][];
-
+            Class = new List<int>();
             for (int i = 0; i < Timetable.Length; i++)
             {
-                Timetable[i] = new int[10];
+                Timetable[i] = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
             }
         }
 

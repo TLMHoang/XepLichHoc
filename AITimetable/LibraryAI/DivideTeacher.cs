@@ -35,6 +35,7 @@ namespace LibraryAI
                 }
 
                 i.listTeacher.Add(teachers[loop].ID);
+                teachers[loop].Class.Add(i.ID);
                 countClassOfTeacher[loop]--;
             }
         }
