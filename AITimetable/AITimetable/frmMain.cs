@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LibraryAI;
+using LibraryAI.Excel;
+using OfficeOpenXml;
 
 namespace AITimetable
 {
@@ -15,21 +17,16 @@ namespace AITimetable
     {
         private List<List<TextBox>> matrix;
 
-        List<Subjects> lstSubjects = new Subjects().CreateDataTest();
-        List<Teacher> lstTeacher;
-        List<Grade> lstGrades = new Grade().CreateDataTest();
-        List<List<Teacher>> aLstTeachers;
-        List<Class> lstClasses;
-        Class SClass = new Class();
+       
         public frmMain()
         {
             InitializeComponent();
 
             Control.CheckForIllegalCrossThreadCalls = false;
 
-            lstTeacher = new Teacher().CreateDataTeacher(lstSubjects);
-            aLstTeachers = new Teacher().CreateDataTestDT(lstSubjects, lstTeacher);
-            lstClasses = new Class().createDataTest(lstGrades);
+            Program.lstTeacher = new Teacher().CreateDataTeacher(Program.lstSubjects);
+            Program.aLstTeachers = new Teacher().CreateDataTestDT(Program.lstSubjects, Program.lstTeacher);
+            Program.lstClasses = new Class().createDataTest(Program.lstGrades);
 
             AddItemComboBox();
         }
@@ -38,11 +35,11 @@ namespace AITimetable
 
         private void AddItemComboBox()
         {
-            string[] iCbx = new string[lstClasses.Count];
+            string[] iCbx = new string[Program.lstClasses.Count];
 
-            for (int i = 0; i < lstClasses.Count; i++)
+            for (int i = 0; i < Program.lstClasses.Count; i++)
             {
-                iCbx[i] = lstClasses[i].Name;
+                iCbx[i] = Program.lstClasses[i].Name;
             }
             cbxClass.Items.AddRange(iCbx);
 
@@ -53,8 +50,8 @@ namespace AITimetable
         // xép thời Khóa biểu
         private void btnTKB_Click(object sender, EventArgs e)
         {
-            new DivideTeacher().Handle(aLstTeachers, lstClasses);
-            new TimeTable().XepLich(lstClasses, lstTeacher, lstSubjects);
+            new DivideTeacher().Handle(Program.aLstTeachers, Program.lstClasses);
+            new TimeTable().XepLich(Program.lstClasses, Program.lstTeacher, Program.lstSubjects);
             MessageBox.Show("OK");
 
 
@@ -62,15 +59,15 @@ namespace AITimetable
 
         private void cbxClass_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SClass = lstClasses.FirstOrDefault(p => p.Name.Equals(cbxClass.SelectedItem.ToString()));
-            LoadTimeTable(SClass.TimetableClass);
+            Program.SClass = Program.lstClasses.FirstOrDefault(p => p.Name.Equals(cbxClass.SelectedItem.ToString()));
+            LoadTimeTable(Program.SClass.TimetableClass);
 
             cbxGiaoVien.Items.Clear();
-            string[] iCb = new string[SClass.listTeacher.Count];
+            string[] iCb = new string[Program.SClass.listTeacher.Count];
 
-            for (int i = 0; i < SClass.listTeacher.Count; i++)
+            for (int i = 0; i < Program.SClass.listTeacher.Count; i++)
             {
-                iCb[i] = lstTeacher.FirstOrDefault(p => p.ID == SClass.listTeacher[i]).Name;
+                iCb[i] = Program.lstTeacher.FirstOrDefault(p => p.ID == Program.SClass.listTeacher[i]).Name;
             }
             cbxGiaoVien.Items.AddRange(iCb);
         }
@@ -87,7 +84,7 @@ namespace AITimetable
                 case -98:
                     return "SHL";
                 default:
-                    return lstSubjects.FirstOrDefault(c => c.ID == IDSub).Name;
+                    return Program.lstSubjects.FirstOrDefault(c => c.ID == IDSub).Name;
             }
         }
 
@@ -99,7 +96,7 @@ namespace AITimetable
             }
             else
             {
-                return lstClasses.FirstOrDefault(c => c.ID == IDClass).Name;
+                return Program.lstClasses.FirstOrDefault(c => c.ID == IDClass).Name;
             }
         }
 
@@ -200,12 +197,44 @@ namespace AITimetable
             ComboBox cbx = sender as ComboBox;
 
 
-            Teacher t = lstTeacher.FirstOrDefault(p => p.ID == SClass.listTeacher[cbx.SelectedIndex]);
+            Teacher t = Program.lstTeacher.FirstOrDefault(p => p.ID == Program.SClass.listTeacher[cbx.SelectedIndex]);
 
-            lblMon.Text = "Thời khóa biểu giáo viên " + lstSubjects.FirstOrDefault(p=>p.ID == t.IDSubject).Name;
+            lblMon.Text = "Thời khóa biểu giáo viên " + Program.lstSubjects.FirstOrDefault(p=>p.ID == t.IDSubject).Name;
 
 
             LoadTimeTableTeacher(t.Timetable);
+        }
+
+        private void frmMain_LocationChanged(object sender, EventArgs e)
+        {
+            Form f = this;
+
+            if (this.Location.X < 0 && this.Location.Y < 0)
+            {
+                
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            int[] a = new int[10];
+            Class c = Program.lstClasses[0];
+            frmChangeSub f = new frmChangeSub();
+            
+            f.ShowDialog();
+
+
+        }
+
+        private void btnExprotEXC_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Excel | *.xlsx | Excel 2003 | *.xls";
+            saveFileDialog.ShowDialog();
+            if (saveFileDialog.FileName.Length > 0)
+            {
+                new ExportExcel(saveFileDialog.FileName, Program.lstSubjects, Program.lstClasses).ExportFile();
+            }
         }
     }
 }

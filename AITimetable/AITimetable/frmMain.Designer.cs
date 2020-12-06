@@ -34,6 +34,8 @@
             this.tlpGiaoVien = new System.Windows.Forms.TableLayoutPanel();
             this.lblMon = new System.Windows.Forms.Label();
             this.cbxGiaoVien = new System.Windows.Forms.ComboBox();
+            this.btnSwapSub = new System.Windows.Forms.Button();
+            this.btnExprotEXC = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnTKB
@@ -122,18 +124,40 @@
             // cbxGiaoVien
             // 
             this.cbxGiaoVien.FormattingEnabled = true;
-            this.cbxGiaoVien.Location = new System.Drawing.Point(917, 482);
+            this.cbxGiaoVien.Location = new System.Drawing.Point(906, 412);
             this.cbxGiaoVien.Name = "cbxGiaoVien";
             this.cbxGiaoVien.Size = new System.Drawing.Size(169, 21);
             this.cbxGiaoVien.TabIndex = 3;
             this.cbxGiaoVien.Text = "-----------------Giáo viên-----------------";
             this.cbxGiaoVien.SelectedIndexChanged += new System.EventHandler(this.cbxGiaoVien_SelectedIndexChanged);
             // 
+            // btnSwapSub
+            // 
+            this.btnSwapSub.Location = new System.Drawing.Point(926, 538);
+            this.btnSwapSub.Name = "btnSwapSub";
+            this.btnSwapSub.Size = new System.Drawing.Size(122, 23);
+            this.btnSwapSub.TabIndex = 6;
+            this.btnSwapSub.Text = "Sửa thời khóa biểu";
+            this.btnSwapSub.UseVisualStyleBackColor = true;
+            this.btnSwapSub.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // btnExprotEXC
+            // 
+            this.btnExprotEXC.Location = new System.Drawing.Point(947, 195);
+            this.btnExprotEXC.Name = "btnExprotEXC";
+            this.btnExprotEXC.Size = new System.Drawing.Size(75, 23);
+            this.btnExprotEXC.TabIndex = 7;
+            this.btnExprotEXC.Text = "button1";
+            this.btnExprotEXC.UseVisualStyleBackColor = true;
+            this.btnExprotEXC.Click += new System.EventHandler(this.btnExprotEXC_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1128, 760);
+            this.ClientSize = new System.Drawing.Size(1092, 760);
+            this.Controls.Add(this.btnExprotEXC);
+            this.Controls.Add(this.btnSwapSub);
             this.Controls.Add(this.lblMon);
             this.Controls.Add(this.tlpGiaoVien);
             this.Controls.Add(this.tlpTKB);
@@ -143,6 +167,7 @@
             this.Name = "frmMain";
             this.Text = "Main";
             this.Load += new System.EventHandler(this.frmMain_Load);
+            this.LocationChanged += new System.EventHandler(this.frmMain_LocationChanged);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -155,6 +180,8 @@
         private System.Windows.Forms.TableLayoutPanel tlpGiaoVien;
         private System.Windows.Forms.Label lblMon;
         private System.Windows.Forms.ComboBox cbxGiaoVien;
+        private System.Windows.Forms.Button btnSwapSub;
+        private System.Windows.Forms.Button btnExprotEXC;
     }
 }
 

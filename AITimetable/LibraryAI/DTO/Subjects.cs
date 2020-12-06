@@ -23,6 +23,7 @@ namespace LibraryAI
             MaxInDay = max;
         }
 
+
         // Tạo dữ liệu test trướng khi liên kết với database
         public List<Subjects> CreateDataTest()
         {

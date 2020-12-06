@@ -148,7 +148,6 @@ namespace LibraryAI
         //Xep mon hoc buoi phụ
         private void HandleWithSub(Subjects TD, Subjects GDQP)
         {
-
         }
 
         #region thay dổi môn học. cho tkb bị rong môn
@@ -244,7 +243,7 @@ namespace LibraryAI
         }
 
         // Lấy toàn bộ thời khóa biểu của giáo viên
-        private List<TimeTableTeacher> GetTimeTableTeachers(List<int> lstIdTeacher, List<Teacher> lstTeacher)
+        public List<TimeTableTeacher> GetTimeTableTeachers(List<int> lstIdTeacher, List<Teacher> lstTeacher)
         {
             List<TimeTableTeacher> lst = new List<TimeTableTeacher>();
 
