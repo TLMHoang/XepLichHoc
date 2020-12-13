@@ -11,11 +11,29 @@ namespace LibraryAI
         private List<int> lstIDTeacherOfClass = new List<int>();
         private Class CSelect = new Class();
         private List<CountLesson> lstCount;
+        List<Teacher> lstTD = new List<Teacher>();
+        List<Teacher> lstGDQP = new List<Teacher>();
+        private int iDTD, iDGDQP;
 
         public void XepLich(List<Class> classes, List<Teacher> teachers, List<Subjects> subjects)
         {
             lstCount = new CountLesson().getList(subjects);
             GetClassNoTimeTable(classes);
+            iDTD = subjects.FirstOrDefault(p => p.Name.Equals("Thể dục")).ID;
+            iDGDQP = subjects.FirstOrDefault(p => p.Name.Equals("GDQP")).ID;
+            //Lấy danh sách GV TD Va GV QP
+            foreach (Teacher t in teachers)
+            {
+                if (t.IDSubject == iDTD)
+                {
+                    lstTD.Add(t);
+                }
+                else if (t.IDSubject == iDGDQP)
+                {
+                    lstGDQP.Add(t);
+                }
+            }
+
             while (lstIDClass.Count != 0)
             {
                 SetTimeTimeTableForclass(classes, teachers, subjects);
@@ -28,23 +46,48 @@ namespace LibraryAI
             lstCount = new CountLesson().getList(subjects);
             SelectRandomClass(classes);
             SetDefaultSub();
+
+            // Lấy GV day TD vs GDQP
+            Teacher TD = lstTD.FirstOrDefault(t => lstIDTeacherOfClass.Find(p => p == t.ID) != 0);
+            Teacher GDQP = lstGDQP.FirstOrDefault(t => lstIDTeacherOfClass.Find(p => p == t.ID) != 0);
+            bool mor = true;
+            lstIDTeacherOfClass.Remove(TD.ID);
+            lstIDTeacherOfClass.Remove(GDQP.ID);
+            
+            // Xếp môn dầu tiên
             int SubStart = GetSubFirstInWeek(subjects, teachers);
+            Random rad = new Random();
 
             Teacher sTeacher = teachers.FirstOrDefault(p => p.ID == lstIDTeacherOfClass[SubStart]);
             Subjects sSubject = subjects.FirstOrDefault(s => s.ID == sTeacher.IDSubject);
 
             HandleWithMSub(sTeacher, sSubject, (sSubject.SubMain) ? 0 : -1);
             lstIDTeacherOfClass.RemoveAt(SubStart);
-            lstIDTeacherOfClass.Add(sTeacher.ID);
 
-
-            for (int i = 0; i < lstIDTeacherOfClass.Count - 1; i++)
+            while (lstIDTeacherOfClass.Count != 0)
             {
-                sTeacher = teachers.FirstOrDefault(p => p.ID == lstIDTeacherOfClass[i]);
+                int index = rad.Next(0, lstIDTeacherOfClass.Count - 1);
+                sTeacher = teachers.FirstOrDefault(p => p.ID == lstIDTeacherOfClass[index]);
                 sSubject = subjects.FirstOrDefault(s => s.ID == sTeacher.IDSubject);
-
                 HandleWithMSub(sTeacher, sSubject, (sSubject.SubMain) ? 0 : -1);
+                lstIDTeacherOfClass.RemoveAt(index);
             }
+#if DEBUG
+            if (GDQP.Timetable == null)
+            {
+            }
+
+            if (TD.Timetable == null)
+            {
+            }
+#endif
+            if (CSelect.TimetableClass[0][0] != -1)
+            {
+                mor = false;
+            }
+
+            HandleWithSub(iDTD, iDGDQP, mor, GDQP, TD);
+
             #region Dùng sau
             /*
             while (lstIDTeacherOfClass.Count != 0)
@@ -88,12 +131,14 @@ namespace LibraryAI
             */
             #endregion
 
+            lstCount = new CountLesson().getList(subjects);
             List<ExchangeLesson> lstEx = CheckTKB(CSelect.TimetableClass);
             if (lstEx.Count > 0)
             {
-                FixTimeTable(lstEx, lstCount, lstIDTeacherOfClass, teachers);
+                FixTimeTable(lstEx, lstCount, CSelect.listTeacher, teachers);
             }
             //CSelect.Error = (.Count > 0) ? true : false;
+            
         }
 
         //Lấy danh sách các class chưa có THời khóa biểu
@@ -132,6 +177,8 @@ namespace LibraryAI
             int iSe = rand.Next(0, lstIDClass.Count - 1);
             CSelect = classes.FirstOrDefault(p => p.ID == lstIDClass[iSe]);
 
+
+            //Lấy danh sách Giáo vien trong lớp
             lstIDTeacherOfClass = new List<int>();
             foreach (int i in CSelect.listTeacher)
             {
@@ -145,10 +192,7 @@ namespace LibraryAI
 
 
 
-        //Xep mon hoc buoi phụ
-        private void HandleWithSub(Subjects TD, Subjects GDQP)
-        {
-        }
+        
 
         #region thay dổi môn học. cho tkb bị rong môn
 
@@ -166,13 +210,22 @@ namespace LibraryAI
 
                 TimeTableTeacher STTT = lstTTT.FirstOrDefault(p => p.IDSub == lstSB[0]);
 
-                TimeTableTeacher SN = ChangeSub(STTT, GetTimeTableTeachers(lstIdTecher, lstTeacher), lstEx[0]);
+                TimeTableTeacher SN = null;
+
+                if (lstEx.Count > 0)
+                {
+                    SN = ChangeSub(STTT, GetTimeTableTeachers(lstIdTecher, lstTeacher), lstEx[0]); // loi
+                }
+                else
+                {
+                    break;
+                }
 
                 if (SN != null)
                 {
                     lstEx.RemoveAt(0);
-                    lstTeacher.FirstOrDefault(t => t.ID == STTT.IDTeacher).Timetable = STTT.TT;
-                    lstTeacher.FirstOrDefault(t => t.ID == SN.IDTeacher).Timetable = SN.TT;
+                    //lstTeacher.FirstOrDefault(t => t.ID == STTT.IDTeacher).Timetable = STTT.TT;
+                    //lstTeacher.FirstOrDefault(t => t.ID == SN.IDTeacher).Timetable = SN.TT;
                 }
 
                 c = lstC.FirstOrDefault(p => p.IDSub == lstSB[0]);
@@ -181,6 +234,7 @@ namespace LibraryAI
                 {
                     lstSB.RemoveAt(0);
                 }
+
             }
         }
 
@@ -210,6 +264,7 @@ namespace LibraryAI
                             if (teacher.TT[e.X][e.Y] == -1)
                             {
                                 item.TT[exchange.X][exchange.Y] = CSelect.ID;
+                                item.TT[exchange.X][exchange.Y] = -1;
                                 CSelect.TimetableClass[exchange.X][exchange.Y] = item.IDSub;
                                 teacher.TT[e.X][e.Y] = CSelect.ID;
                                 CSelect.TimetableClass[e.X][e.Y] = teacher.IDSub;
@@ -371,16 +426,72 @@ namespace LibraryAI
 
         }
 
+        //Xep mon hoc buoi phụ
+        private void HandleWithSub(int iDTD, int iDGDQP, bool morning, Teacher GDQP, Teacher TD)
+        {
+            //Kiểm tra xem lớp học buổi sáng hay chiều
+            if (morning)
+            {
+                for (int i = 0; i < 7; i++)
+                {
+                    if (GDQP.Timetable[i][2] == -1)
+                    {
+                        CSelect.TimetableClass[i][2] = iDGDQP;
+                        CSelect.TimetableClass[i][3] = iDTD;
+                        CSelect.TimetableClass[i][4] = iDTD;
+                        GDQP.Timetable[i][2] = CSelect.ID;
+                        TD.Timetable[i][3] = CSelect.ID;
+                        TD.Timetable[i][4] = CSelect.ID;
+                        break;
+                    }
+                    if (GDQP.Timetable[i][3] == -1)
+                    {
+                        CSelect.TimetableClass[i][3] = iDGDQP;
+                        CSelect.TimetableClass[i][2] = iDTD;
+                        CSelect.TimetableClass[i][1] = iDTD;
+                        GDQP.Timetable[i][3] = CSelect.ID;
+                        TD.Timetable[i][2] = CSelect.ID;
+                        TD.Timetable[i][1] = CSelect.ID;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 7; i++)
+                {
+                    if (GDQP.Timetable[i][6] == -1)
+                    {
+                        CSelect.TimetableClass[i][6] = iDGDQP;
+                        CSelect.TimetableClass[i][7] = iDTD;
+                        CSelect.TimetableClass[i][8] = iDTD;
+                        GDQP.Timetable[i][6] = CSelect.ID;
+                        TD.Timetable[i][7] = CSelect.ID;
+                        TD.Timetable[i][8] = CSelect.ID;
+                        break;
+                    }
+                    if (GDQP.Timetable[i][7] == -1)
+                    {
+                        CSelect.TimetableClass[i][7] = iDGDQP;
+                        CSelect.TimetableClass[i][6] = iDTD;
+                        CSelect.TimetableClass[i][5] = iDTD;
+                        GDQP.Timetable[i][7] = CSelect.ID;
+                        TD.Timetable[i][6] = CSelect.ID;
+                        TD.Timetable[i][5] = CSelect.ID;
+                        break;
+                    }
+                }
+            }
+        }
         // Check fail TKB
         // Kiểm tra vị trí bị rỗng
         // Dếm lại môn đã xuất hiện trong TKB
         public List<ExchangeLesson> CheckTKB(int[][] tb)
         {
             List<ExchangeLesson> lst = new List<ExchangeLesson>();
-            
             for (int i = 0; i < tb.Length - 1; i++)
             {
-                CountLesson a;
+                
                 for (int j = 0; j < tb[i].Length; j++)
                 {
                     if (tb[i][j] == 0)
@@ -390,7 +501,7 @@ namespace LibraryAI
                     else
                     {
                         // Đếm số lượng của các môn
-                        a = lstCount.FirstOrDefault(p => p.IDSub == tb[i][j]);
+                        CountLesson a = lstCount.FirstOrDefault(p => p.IDSub == tb[i][j]);
                         if (a != null)
                         {
                             a.Times++;
@@ -412,9 +523,6 @@ namespace LibraryAI
                 item.Times = 0;
             }
         }
-
-
-        // Tăng biến đếm lên 1
 
 
         //Loop week
@@ -442,14 +550,14 @@ namespace LibraryAI
                 {
                     if (CSelect.TimetableClass[0][0] == -1)
                     {
-                        if (teachers[i].Timetable[5][0] == 0)
+                        if (teachers[i].Timetable[5][0] == -1)
                         {
                             return i;
                         }
                     }
                     else
                     {
-                        if (teachers[i].Timetable[0][1] == 0)
+                        if (teachers[i].Timetable[0][1] == -1)
                         {
                             return i;
                         }

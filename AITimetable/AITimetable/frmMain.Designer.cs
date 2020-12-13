@@ -133,21 +133,22 @@
             // 
             // btnSwapSub
             // 
-            this.btnSwapSub.Location = new System.Drawing.Point(926, 538);
+            this.btnSwapSub.Location = new System.Drawing.Point(947, 245);
             this.btnSwapSub.Name = "btnSwapSub";
             this.btnSwapSub.Size = new System.Drawing.Size(122, 23);
             this.btnSwapSub.TabIndex = 6;
             this.btnSwapSub.Text = "Sửa thời khóa biểu";
             this.btnSwapSub.UseVisualStyleBackColor = true;
+            this.btnSwapSub.Visible = false;
             this.btnSwapSub.Click += new System.EventHandler(this.button1_Click);
             // 
             // btnExprotEXC
             // 
             this.btnExprotEXC.Location = new System.Drawing.Point(947, 195);
             this.btnExprotEXC.Name = "btnExprotEXC";
-            this.btnExprotEXC.Size = new System.Drawing.Size(75, 23);
+            this.btnExprotEXC.Size = new System.Drawing.Size(101, 23);
             this.btnExprotEXC.TabIndex = 7;
-            this.btnExprotEXC.Text = "button1";
+            this.btnExprotEXC.Text = "Xuất file excel";
             this.btnExprotEXC.UseVisualStyleBackColor = true;
             this.btnExprotEXC.Click += new System.EventHandler(this.btnExprotEXC_Click);
             // 

@@ -41,7 +41,7 @@ namespace LibraryAI
         // Tạo dữ liệu test gv
         public List<Teacher> CreateDataTeacher(List<Subjects> lstSubjects)
         {
-            int count = 0;
+            int count = 1;
             Random rad = new Random();
             NameTeacher nteacher = new NameTeacher();
             List<Teacher> lstTeachers = new List<Teacher>();

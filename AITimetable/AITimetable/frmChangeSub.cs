@@ -253,26 +253,26 @@ namespace AITimetable
         }
     }
 
-    public class SPTag
-    {
+    //public class SPTag
+    //{
         
 
-        public int IDTeacher { get; set; }
-        public int IDSub { get; set; }
-        public int IDClass { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
+    //    public int IDTeacher { get; set; }
+    //    public int IDSub { get; set; }
+    //    public int IDClass { get; set; }
+    //    public int X { get; set; }
+    //    public int Y { get; set; }
 
 
-        public SPTag(){}
+    //    public SPTag(){}
 
-        public SPTag(int iDTeacher, int iDSub, int iDClass, int x, int y)
-        {
-            IDTeacher = iDTeacher;
-            IDSub = iDSub;
-            IDClass = iDClass;
-            X = x;
-            Y = y;
-        }
-    }
+    //    public SPTag(int iDTeacher, int iDSub, int iDClass, int x, int y)
+    //    {
+    //        IDTeacher = iDTeacher;
+    //        IDSub = iDSub;
+    //        IDClass = iDClass;
+    //        X = x;
+    //        Y = y;
+    //    }
+    //}
 }

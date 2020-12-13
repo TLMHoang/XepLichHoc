@@ -39,7 +39,7 @@ namespace LibraryAI
             lst.Add(new Subjects(8, "Anh", 4, true, 2));// 4
             lst.Add(new Subjects(9, "Công Nghệ", 2, true, 1));// 2
             lst.Add(new Subjects(10, "GDCD", 2, true, 1));// 2
-            lst.Add(new Subjects(11, "Thể giục", 2, false, 2));//2
+            lst.Add(new Subjects(11, "Thể dục", 2, false, 2));//2
             lst.Add(new Subjects(12, "GDQP", 1, false, 1));//1
 
             return lst;
