@@ -8,7 +8,7 @@ using System.Text;
 
 namespace LibraryAI.Excel
 {
-    public class ExportExcel : FormatExcel
+    public class ExportExcel
     {
         public string FilePath { get; set; }
         public string Author { get; set; }

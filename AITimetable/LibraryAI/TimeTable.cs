@@ -190,10 +190,6 @@ namespace LibraryAI
 
         // Lấy danh sách giáp viên
 
-
-
-        
-
         #region thay dổi môn học. cho tkb bị rong môn
 
         // Chuyển các môn cho TKB hoàn chỉnh
@@ -264,7 +260,7 @@ namespace LibraryAI
                             if (teacher.TT[e.X][e.Y] == -1)
                             {
                                 item.TT[exchange.X][exchange.Y] = CSelect.ID;
-                                item.TT[exchange.X][exchange.Y] = -1;
+                                item.TT[e.X][e.Y] = -1;
                                 CSelect.TimetableClass[exchange.X][exchange.Y] = item.IDSub;
                                 teacher.TT[e.X][e.Y] = CSelect.ID;
                                 CSelect.TimetableClass[e.X][e.Y] = teacher.IDSub;
@@ -278,7 +274,6 @@ namespace LibraryAI
 
             return null;
         }
-
 
         // LẤy các mon chưa đủ tiết
         private List<int> GetSubFail(List<CountLesson> lstC)

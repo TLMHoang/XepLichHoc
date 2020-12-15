@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace AITimetable
         private List<int> lstbtn = new List<int>();
         private List<SPTag> lstTag = new List<SPTag>();
         private List<SPTag> Swap = new List<SPTag>();
+        private List<SPTag> TSwap = new List<SPTag>();
+        private Teacher STeacher = new Teacher();
 
 
         public frmMain()
@@ -70,7 +73,28 @@ namespace AITimetable
             new DivideTeacher().Handle(Program.aLstTeachers, Program.lstClasses);
             new TimeTable().XepLich(Program.lstClasses, Program.lstTeacher, Program.lstSubjects);
 
+            List<Test> tests = new Test().Check(Program.lstClasses, Program.lstTeacher, Program.lstSubjects);
+            
+            if (tests.Count > 0)
+            {
+                string ErrorT = "Danh sách lỗi \n";
+                foreach (Test t in tests)
+                {
+                    ErrorT += t.IDClass + " - " + t.IDTeacher + " - " + t.X + " - " + t.Y + "\n";
+                }
 
+                string filePath = "LogTime" + DateTime.Now.ToString("ddMMyyyyHHmmss") + ".txt";
+
+                FileStream fs = new FileStream(filePath, FileMode.Create);
+
+                StreamWriter streamWriter = new StreamWriter(fs, Encoding.UTF8);
+                streamWriter.WriteLine(ErrorT);
+
+                streamWriter.Flush();
+
+                fs.Close();
+                MessageBox.Show("Check Error");
+            }
         }
 
         private void cbxClass_SelectedIndexChanged(object sender, EventArgs e)
@@ -167,47 +191,58 @@ namespace AITimetable
                 Swap.Add(t);
             }
 
+            switch (Swap.Count)
+            {
+                case 1:
+                    {
+                        Find(Program.lstGrades.FirstOrDefault(g => g.ID == Program.SClass.IDGrade).Morning, Program.lstSubjects.FirstOrDefault(s => s.ID == Swap[0].IDSub).SubMain, tlpTKB, Swap);
+                        break;
+                    }
+                case 2:
+                    {
+                        HandleSwap(Swap, tlpTKB);
+                        Swap = new List<SPTag>();
+                        break;
+                    }
+                default:
+                    break;
+            }
 
-            if (Swap.Count == 2)
-            {
-                HandleSwap();
-            }
-            else
-            {
-                Find(Program.lstGrades.FirstOrDefault(g => g.ID == Program.SClass.IDGrade).Morning, Program.lstSubjects.FirstOrDefault(s => s.ID == Swap[0].IDSub).SubMain);
-            }
         }
 
 
-        private bool SwapSub()
+        private bool SwapSub(List<SPTag> swap)
         {
-            SPTag SWS = Swap[0];
+            SPTag SWS = swap[0];
             TimeTableTeacher ST = lstT.FirstOrDefault(t => t.IDTeacher == SWS.IDTeacher);
-            SPTag SWT = Swap[1];
+            SPTag SWT = swap[1];
             TimeTableTeacher TT = lstT.FirstOrDefault(t => t.IDTeacher == SWT.IDTeacher);
 
             if (SWS.X != SWT.X || SWS.Y != SWT.Y)
             {
-                if (ST.TT[SWT.X][SWT.Y] != -1 && ST.TT[SWT.X][SWT.Y] != Program.SClass.ID)
+                if (Program.SClass.TimetableClass[SWT.X][SWT.Y] != Program.SClass.TimetableClass[SWS.X][SWS.Y])
                 {
-                    return false;
+                    if (ST.TT[SWT.X][SWT.Y] != -1 && ST.TT[SWT.X][SWT.Y] != Program.SClass.ID)
+                    {
+                        return false;
+                    }
+                    // Kieem tra còn null ko
+                    if (TT.TT[SWS.X][SWS.Y] != -1 && TT.TT[SWS.X][SWS.Y] != Program.SClass.ID)
+                    {
+                        return false;
+                    }
+
+                    ST.TT[SWT.X][SWT.Y] = Program.SClass.ID;
+                    TT.TT[SWS.X][SWS.Y] = Program.SClass.ID;
+                    TT.TT[SWT.X][SWT.Y] = -1;
+                    ST.TT[SWS.X][SWS.Y] = -1;
+
+                    Program.SClass.TimetableClass[SWS.X][SWS.Y] = TT.IDSub;
+                    Program.SClass.TimetableClass[SWT.X][SWT.Y] = ST.IDSub;
+
+                    //var aVal = Program.lstClasses;
+                    LoadTimeTable(Program.SClass.TimetableClass);
                 }
-                // Kieem tra còn null ko
-                if (TT.TT[SWS.X][SWS.Y] != -1 && TT.TT[SWS.X][SWS.Y] != Program.SClass.ID)
-                {
-                    return false;
-                }
-
-                ST.TT[SWT.X][SWT.Y] = Program.SClass.ID;
-                TT.TT[SWS.X][SWS.Y] = Program.SClass.ID;
-                TT.TT[SWT.X][SWT.Y] = -1;
-                ST.TT[SWS.X][SWS.Y] = -1;
-
-                Program.SClass.TimetableClass[SWS.X][SWS.Y] = TT.IDSub;
-                Program.SClass.TimetableClass[SWT.X][SWT.Y] = ST.IDSub;
-
-                //var aVal = Program.lstClasses;
-                LoadTimeTable(Program.SClass.TimetableClass);
 
             }
 
@@ -215,63 +250,60 @@ namespace AITimetable
 
         }
 
-        private void RemoveHighlight()
+        private void RemoveHighlight(TableLayoutPanel tlp)
         {
             foreach (int i in lstbtn)
             {
-                (tlpTKB.Controls[i] as Button).BackColor = SystemColors.Control;
+                (tlp.Controls[i] as Button).BackColor = SystemColors.Control;
             }
         }
 
-        private void Find(bool mor, bool SM)
+        private void Find(bool mor, bool SM, TableLayoutPanel tlp, List<SPTag> swap)
         {
-            if (Swap.Count == 1)
+            foreach (TimeTableTeacher item in lstT)
             {
-                foreach (TimeTableTeacher item in lstT)
+                List<ExchangeLesson> lst = new List<ExchangeLesson>();
+                if (item.IDTeacher != swap[0].IDTeacher) // Kiem tra xem phai mon dang doi hay ko
                 {
-                    List<ExchangeLesson> lst = new List<ExchangeLesson>();
-                    if (item.IDTeacher != Swap[0].IDTeacher) // Kiem tra xem phai mon dang doi hay ko
+                    //ktra gv co trong lich tai cai vi tri dang muon doi
+                    if (item.TT[swap[0].X][swap[0].Y] == -1)
                     {
-                        //ktra gv co trong lich tai cai vi tri dang muon doi
-                        if (item.TT[Swap[0].X][Swap[0].Y] == -1)
+                        if (mor && SM || mor == false && SM == false)
                         {
-                            if (mor && SM || mor == false && SM == false)
+                            for (int i = 0; i < Program.SClass.TimetableClass.Length - 1; i++)
                             {
-                                for (int i = 0; i < Program.SClass.TimetableClass.Length - 1; i++)
+                                for (int j = 0; j < 5; j++)
                                 {
-                                    for (int j = 0; j < 5; j++)
+                                    if (Program.SClass.TimetableClass[i][j] == item.IDSub)
                                     {
-                                        if (Program.SClass.TimetableClass[i][j] == item.IDSub)
-                                        {
-                                            lst.Add(new ExchangeLesson(item.IDTeacher, i, j));
-                                        }
+                                        lst.Add(new ExchangeLesson(item.IDTeacher, i, j));
                                     }
                                 }
                             }
-                            else
+                        }
+                        else
+                        {
+                            for (int i = 0; i < Program.SClass.TimetableClass.Length - 1; i++)
                             {
-                                for (int i = 0; i < Program.SClass.TimetableClass.Length - 1; i++)
+                                for (int j = 5; j < 10; j++)
                                 {
-                                    for (int j = 5; j < 10; j++)
+                                    if (Program.SClass.TimetableClass[i][j] == item.IDSub)
                                     {
-                                        if (Program.SClass.TimetableClass[i][j] == item.IDSub)
-                                        {
-                                            lst.Add(new ExchangeLesson(item.IDTeacher, i, j));
-                                        }
+                                        lst.Add(new ExchangeLesson(item.IDTeacher, i, j));
                                     }
                                 }
                             }
+                        }
 
-                            foreach (ExchangeLesson e in lst)
+                        foreach (ExchangeLesson e in lst)
+                        {
+                            TimeTableTeacher sTeacher = lstT.FirstOrDefault(t => t.IDTeacher == swap[0].IDTeacher);
+                            if (sTeacher.TT[e.X][e.Y] == -1)
                             {
-                                TimeTableTeacher sTeacher = lstT.FirstOrDefault(t => t.IDTeacher == Swap[0].IDTeacher);
-                                if (sTeacher.TT[e.X][e.Y] == -1)
-                                {
-                                    int index = (e.Y * 7) + e.X;
-                                    Button btn = tlpTKB.Controls[index] as Button;
-                                    lstbtn.Add(index);
-                                    btn.BackColor = Color.LightGreen;
-                                }
+                                int index = (e.Y * 7) + e.X;
+                                Button btn = tlp.Controls[index] as Button;
+                                lstbtn.Add(index);
+                                btn.BackColor = Color.LightGreen;
                             }
                         }
                     }
@@ -280,20 +312,20 @@ namespace AITimetable
         }
 
 
-        private void HandleSwap()
+        private void HandleSwap(List<SPTag> swap, TableLayoutPanel tlp)
         {
-            if (Swap[0] != Swap[1])
+            if (swap[0] != swap[1])
             {
-                foreach (SPTag sP in Swap)
+                foreach (SPTag sP in swap)
                 {
                     int index = (sP.Y * 7) + sP.X;
-                    Button b = tlpTKB.Controls[index] as Button;
+                    Button b = tlp.Controls[index] as Button;
                     b.BackColor = SystemColors.Control;
                 }
 
-                if (SwapSub())
+                if (SwapSub(swap))
                 {
-                    LoadTimeTableTeacher(Program.lstTeacher.FirstOrDefault(p => p.ID == Swap[0].IDTeacher).Timetable);
+                    LoadTimeTableTeacher(Program.lstTeacher.FirstOrDefault(p => p.ID == swap[0].IDTeacher).Timetable);
                 }
                 else
                 {
@@ -302,12 +334,11 @@ namespace AITimetable
             }
             else
             {
-                int index = (Swap[0].Y * 7) + Swap[0].X;
-                tlpTKB.Controls[index].BackColor = SystemColors.Control;
+                int index = (swap[0].Y * 7) + swap[0].X;
+                tlp.Controls[index].BackColor = SystemColors.Control;
             }
 
-            Swap = new List<SPTag>();
-            RemoveHighlight();
+            RemoveHighlight(tlp);
         }
         #endregion
 
@@ -332,8 +363,10 @@ namespace AITimetable
                         Text = GetNameClass(TT[j][i]),
                         Margin = new Padding(0),
                         Padding = new Padding(0),
-                        BackColor = SystemColors.Control
+                        BackColor = SystemColors.Control,
+                        Tag = new SPTag(cbxGiaoVien.SelectedIndex + 1, STeacher.IDSubject, TT[j][i], j, i)
                     };
+                    btn.Click += BtnTGV_Click;
                     tlpGiaoVien.Controls.Add(btn);
                     Matrix[i].Add(btn);
 
@@ -349,26 +382,39 @@ namespace AITimetable
         {
             Button btn = sender as Button;
             SPTag t = btn.Tag as SPTag;
-            if (t.IDTeacher > 0)
+
+            if (t.IDClass == -1)
             {
-                Teacher teacher = Program.lstTeacher.FirstOrDefault(p => p.ID == t.IDTeacher);
-                btn.BackColor = Color.Red;
-                Swap.Add(t);
+                int IDSub = Program.SClass.TimetableClass[t.X][t.Y];
+                TSwap.Add(new SPTag(lstT.FirstOrDefault(p=>p.IDSub == IDSub).IDTeacher, IDSub, Program.SClass.ID, t.X, t.Y));
             }
             else
             {
-                int[][] iArr = new int[7][];
-                for (int i = 0; i < 7; i++)
-                {
-                    iArr[i] = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
-                }
+                Teacher teacher = Program.lstTeacher.FirstOrDefault(p => p.ID == t.IDTeacher);
+                btn.BackColor = Color.Red;
+                TSwap.Add(t);
             }
+            
 
-            //Find();
-
-            if (Swap.Count == 2)
+            switch (TSwap.Count)
             {
-                
+                case 1:
+                    {
+                        Program.SClass = Program.lstClasses.FirstOrDefault(c => c.ID == t.IDClass);
+                        lstT = new List<TimeTableTeacher>();
+                        lstT = new TimeTable().GetTimeTableTeachers(Program.SClass.listTeacher, Program.lstTeacher);
+                        LoadTimeTable(Program.SClass.TimetableClass);
+                        Find(Program.lstGrades.FirstOrDefault(g => g.ID == Program.SClass.IDGrade).Morning, Program.lstSubjects.FirstOrDefault(s => s.ID == TSwap[0].IDSub).SubMain, tlpGiaoVien, TSwap);
+                        break;
+                    }
+                case 2:
+                    {
+                        HandleSwap(TSwap, tlpGiaoVien);
+                        TSwap = new List<SPTag>();
+                        break;
+                    }
+                default:
+                    break;
             }
         }
 
@@ -410,6 +456,7 @@ namespace AITimetable
 
         }
 
+        //Select GV
         private void cbxGiaoVien_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox cbx = sender as ComboBox;
@@ -417,12 +464,12 @@ namespace AITimetable
             string str = cbx.SelectedItem as string;
             str = str.Remove(0, str.LastIndexOf("-") + 2);
 
-            Teacher t = Program.lstTeacher.FirstOrDefault(p => p.ID == Convert.ToInt32(str));
+            STeacher = Program.lstTeacher.FirstOrDefault(p => p.ID == Convert.ToInt32(str));
 
-            lblMon.Text = "Thời khóa biểu giáo viên " + Program.lstSubjects.FirstOrDefault(p=>p.ID == t.IDSubject).Name;
+            lblMon.Text = "Thời khóa biểu giáo viên " + Program.lstSubjects.FirstOrDefault(p=>p.ID == STeacher.IDSubject).Name;
 
 
-            LoadTimeTableTeacher(t.Timetable);
+            LoadTimeTableTeacher(STeacher.Timetable);
         }
 
         private void frmMain_LocationChanged(object sender, EventArgs e)
@@ -437,11 +484,7 @@ namespace AITimetable
 
         private void button1_Click(object sender, EventArgs e)
         {
-            frmChangeSub f = new frmChangeSub();
             
-            f.ShowDialog();
-
-
         }
 
         private void btnExprotEXC_Click(object sender, EventArgs e)

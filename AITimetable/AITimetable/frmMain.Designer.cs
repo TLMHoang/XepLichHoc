@@ -133,11 +133,11 @@
             // 
             // btnSwapSub
             // 
-            this.btnSwapSub.Location = new System.Drawing.Point(947, 245);
+            this.btnSwapSub.Location = new System.Drawing.Point(935, 247);
             this.btnSwapSub.Name = "btnSwapSub";
             this.btnSwapSub.Size = new System.Drawing.Size(122, 23);
             this.btnSwapSub.TabIndex = 6;
-            this.btnSwapSub.Text = "Sửa thời khóa biểu";
+            this.btnSwapSub.Text = "Test";
             this.btnSwapSub.UseVisualStyleBackColor = true;
             this.btnSwapSub.Visible = false;
             this.btnSwapSub.Click += new System.EventHandler(this.button1_Click);
