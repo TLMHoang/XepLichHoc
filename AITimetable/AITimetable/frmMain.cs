@@ -36,6 +36,8 @@ namespace AITimetable
             Program.lstClasses = new Class().createDataTest(Program.lstGrades);
 
             AddItemComboBox();
+
+            new DivideTeacher().Handle(Program.aLstTeachers, Program.lstClasses);
         }
 
         public List<List<Button>> Matrix { get => matrix; set => matrix = value; }
@@ -64,37 +66,49 @@ namespace AITimetable
         // xép thời Khóa biểu
         private void btnTKB_Click(object sender, EventArgs e)
         {
-
-            Program.lstTeacher = new Teacher().CreateDataTeacher(Program.lstSubjects);
-            Program.aLstTeachers = new Teacher().CreateDataTestDT(Program.lstSubjects, Program.lstTeacher);
-            Program.lstClasses = new Class().createDataTest(Program.lstGrades);
-
-
-            new DivideTeacher().Handle(Program.aLstTeachers, Program.lstClasses);
-            new TimeTable().XepLich(Program.lstClasses, Program.lstTeacher, Program.lstSubjects);
-
-            List<Test> tests = new Test().Check(Program.lstClasses, Program.lstTeacher, Program.lstSubjects);
-            
-            if (tests.Count > 0)
+            bool loop = true;
+            while (loop)
             {
-                string ErrorT = "Danh sách lỗi \n";
-                foreach (Test t in tests)
+                foreach (Teacher t in Program.lstTeacher)
                 {
-                    ErrorT += t.IDClass + " - " + t.IDTeacher + " - " + t.X + " - " + t.Y + "\n";
+                    t.ResetTT();
+                }
+                foreach (Class c in Program.lstClasses)
+                {
+                    c.ResetTT(Program.lstGrades);
                 }
 
-                string filePath = "LogTime" + DateTime.Now.ToString("ddMMyyyyHHmmss") + ".txt";
 
-                FileStream fs = new FileStream(filePath, FileMode.Create);
+                new TimeTable().XepLich(Program.lstClasses, Program.lstTeacher, Program.lstSubjects);
 
-                StreamWriter streamWriter = new StreamWriter(fs, Encoding.UTF8);
-                streamWriter.WriteLine(ErrorT);
+                List<Test> tests = new Test().Check(Program.lstClasses, Program.lstTeacher, Program.lstSubjects);
 
-                streamWriter.Flush();
+                if (tests.Count > 0)
+                {
+                    string ErrorT = "Danh sách lỗi \n";
+                    foreach (Test t in tests)
+                    {
+                        ErrorT += t.IDClass + " - " + t.IDTeacher + " - " + t.X + " - " + t.Y + "\n";
+                    }
 
-                fs.Close();
-                MessageBox.Show("Check Error");
+                    string filePath = "LogTime" + DateTime.Now.ToString("ddMMyyyyHHmmss") + ".txt";
+
+                    FileStream fs = new FileStream(filePath, FileMode.Create);
+
+                    StreamWriter streamWriter = new StreamWriter(fs, Encoding.UTF8);
+                    streamWriter.WriteLine(ErrorT);
+
+                    streamWriter.Flush();
+
+                    fs.Close();
+                }
+                else
+                {
+                    loop = false;
+                }
+                
             }
+            MessageBox.Show("Xếp thành công");
         }
 
         private void cbxClass_SelectedIndexChanged(object sender, EventArgs e)

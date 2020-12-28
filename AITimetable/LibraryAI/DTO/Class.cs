@@ -98,6 +98,11 @@ namespace LibraryAI
             return lst;
         }
 
+        public void ResetTT(List<Grade> grades)
+        {
+            SetTimetable(7, 10, grades.FirstOrDefault(p=>p.ID == IDGrade).Morning);
+        }
+
 
         //Khởi tạo thời khóa biểu phân biệt buổi chính + phụ
         //public Class(int iD, Grade grade, string nameClass, int Days, int Tiet)

@@ -38,6 +38,14 @@ namespace LibraryAI
             }
         }
 
+        public void ResetTT()
+        {
+            for (int i = 0; i < Timetable.Length; i++)
+            {
+                Timetable[i] = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+            }
+        }
+
         // Tạo dữ liệu test gv
         public List<Teacher> CreateDataTeacher(List<Subjects> lstSubjects)
         {
