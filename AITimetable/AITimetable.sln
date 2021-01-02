@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AITimetable", "AITimetable\AITimetable.csproj", "{94A69830-8BDD-4E17-BF37-F70F29F856E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryAI", "LibraryAI\LibraryAI.csproj", "{8E5CCBBF-DDAA-47B9-8A32-084C2176A80A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryAI", "LibraryAI\LibraryAI.csproj", "{8E5CCBBF-DDAA-47B9-8A32-084C2176A80A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

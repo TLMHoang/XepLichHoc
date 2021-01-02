@@ -756,7 +756,7 @@
             this.Controls.Add(this.cbxClass);
             this.Controls.Add(this.btnTKB);
             this.Name = "frmMain";
-            this.Text = "Main";
+            this.Text = "TKB";
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.LocationChanged += new System.EventHandler(this.frmMain_LocationChanged);
             this.panel1.ResumeLayout(false);
