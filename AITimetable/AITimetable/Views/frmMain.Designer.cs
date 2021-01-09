@@ -82,6 +82,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "frmMain";
             this.Text = "Home";
+            this.Load += new System.EventHandler(this.frmMain_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 

@@ -32,5 +32,20 @@ namespace AITimetable
             f.ShowDialog();
             this.Show();
         }
+
+        private void frmMain_Load(object sender, EventArgs e)
+        {
+            frmLogin f = new frmLogin();
+            this.Hide();
+
+            if (f.ShowDialog() == DialogResult.Yes)
+            {
+                this.Show();
+            }
+            else
+            {
+                this.Close();
+            }
+        }
     }
 }
