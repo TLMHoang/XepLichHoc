@@ -88,7 +88,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmQLKhoi";
-            this.Text = "frmQLKhoi";
+            this.Text = "Quản lý môn học của khối";
             this.Load += new System.EventHandler(this.frmQLKhoi_Load);
             this.pnlForm.ResumeLayout(false);
             this.ResumeLayout(false);

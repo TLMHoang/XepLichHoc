@@ -81,7 +81,7 @@
             this.ClientSize = new System.Drawing.Size(428, 125);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "frmMain";
-            this.Text = "Home";
+            this.Text = "US Team";
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);

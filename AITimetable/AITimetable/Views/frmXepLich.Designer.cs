@@ -743,7 +743,7 @@
             this.label34.Text = "Tiết 1";
             this.label34.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // frmMain
+            // frmXepLich
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -755,8 +755,8 @@
             this.Controls.Add(this.cbxGiaoVien);
             this.Controls.Add(this.cbxClass);
             this.Controls.Add(this.btnTKB);
-            this.Name = "frmMain";
-            this.Text = "TKB";
+            this.Name = "frmXepLich";
+            this.Text = "Xếp thời khóa biểu";
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.LocationChanged += new System.EventHandler(this.frmMain_LocationChanged);
             this.panel1.ResumeLayout(false);
