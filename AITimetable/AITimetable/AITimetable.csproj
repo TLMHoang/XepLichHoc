@@ -67,32 +67,91 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\BangDiem.cs" />
+    <Compile Include="Database\BHYT.cs" />
+    <Compile Include="Database\CupHoc.cs" />
     <Compile Include="Database\DBContext.cs" />
+    <Compile Include="Database\DiemDanh.cs" />
+    <Compile Include="Database\DTBMon.cs" />
+    <Compile Include="Database\DTBTong.cs" />
+    <Compile Include="Database\FunctionOrder.cs" />
+    <Compile Include="Database\HoaDonHocPhi.cs" />
     <Compile Include="Database\Khoi.cs" />
+    <Compile Include="Database\LienKetPHvsH.cs" />
+    <Compile Include="Database\LoaiDiem.cs" />
+    <Compile Include="Database\LoaiHanhKiem.cs" />
+    <Compile Include="Database\LoaiHocSinh.cs" />
+    <Compile Include="Database\LoaiThongBao.cs" />
+    <Compile Include="Database\LoaiTrangThai.cs" />
     <Compile Include="Database\Lop.cs" />
+    <Compile Include="Database\MonCuaKhoi.cs" />
     <Compile Include="Database\MonHoc.cs" />
     <Compile Include="Database\PhanCongDay.cs" />
+    <Compile Include="Database\TaiKhoanPH.cs" />
     <Compile Include="Database\TaiKhoanTruong.cs" />
-    <Compile Include="frmLogin.cs">
+    <Compile Include="Database\ThongBaoH.cs" />
+    <Compile Include="Database\ThongBaoLop.cs" />
+    <Compile Include="Database\ThongBaoTruong.cs" />
+    <Compile Include="Database\ThongTinH.cs" />
+    <Compile Include="Database\TienHocPhi.cs" />
+    <Compile Include="Database\XinPhep.cs" />
+    <Compile Include="Views\ControlCustom\mgsCustomForQLKhoi.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmLogin.designer.cs">
+    <Compile Include="Views\ControlCustom\mgsCustomForQLKhoi.Designer.cs">
+      <DependentUpon>mgsCustomForQLKhoi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ControlCustom\uctSoLuongTiet.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\ControlCustom\uctSoLuongTiet.Designer.cs">
+      <DependentUpon>uctSoLuongTiet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\frmLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\frmLogin.designer.cs">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmMain.cs">
+    <Compile Include="Views\frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmMain.Designer.cs">
+    <Compile Include="Views\frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\frmQLKhoi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\frmQLKhoi.Designer.cs">
+      <DependentUpon>frmQLKhoi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\frmXepLich.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\frmXepLich.Designer.cs">
+      <DependentUpon>frmXepLich.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\MonCuaKhoiModels.cs" />
     <Compile Include="Models\TaiKhoanModels.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="frmLogin.resx">
+    <EmbeddedResource Include="Views\ControlCustom\mgsCustomForQLKhoi.resx">
+      <DependentUpon>mgsCustomForQLKhoi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ControlCustom\uctSoLuongTiet.resx">
+      <DependentUpon>uctSoLuongTiet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmMain.resx">
+    <EmbeddedResource Include="Views\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\frmQLKhoi.resx">
+      <DependentUpon>frmQLKhoi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\frmXepLich.resx">
+      <DependentUpon>frmXepLich.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -139,5 +198,6 @@
     <Content Include="Resource\sourcelogo.png" />
     <Content Include="Resource\Ust.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace AITimetable.Database
+namespace AITimetable.Database
 {
     using System;
     using System.Collections.Generic;
@@ -6,36 +6,29 @@
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("nxtckedu_sa.Khoi")]
-    public partial class Khoi
+    [Table("nxtckedu_sa.LoaiThongBao")]
+    public partial class LoaiThongBao
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Khoi()
+        public LoaiThongBao()
         {
-            Lops = new HashSet<Lop>();
-            MonCuaKhois = new HashSet<MonCuaKhoi>();
-            TienHocPhis = new HashSet<TienHocPhi>();
+            ThongBaoHS = new HashSet<ThongBaoH>();
+            ThongBaoLops = new HashSet<ThongBaoLop>();
+            ThongBaoTruongs = new HashSet<ThongBaoTruong>();
         }
 
         public int ID { get; set; }
 
-        [StringLength(20)]
-        public string TenKhoi { get; set; }
-
-        public bool? BuoiSang { get; set; }
+        [StringLength(100)]
+        public string TenThongBao { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Lop> Lops { get; set; }
+        public virtual ICollection<ThongBaoH> ThongBaoHS { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<MonCuaKhoi> MonCuaKhois { get; set; }
+        public virtual ICollection<ThongBaoLop> ThongBaoLops { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TienHocPhi> TienHocPhis { get; set; }
-
-        public override string ToString()
-        {
-            return "Khối " + TenKhoi;
-        }
+        public virtual ICollection<ThongBaoTruong> ThongBaoTruongs { get; set; }
     }
 }

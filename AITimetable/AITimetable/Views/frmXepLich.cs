@@ -14,7 +14,7 @@ using OfficeOpenXml;
 
 namespace AITimetable
 {
-    public partial class frmMain : Form
+    public partial class frmXepLich : Form
     {
         private List<List<Button>> matrix;
         private List<TimeTableTeacher> lstT;
@@ -25,7 +25,7 @@ namespace AITimetable
         private Teacher STeacher = new Teacher();
 
 
-        public frmMain()
+        public frmXepLich()
         {
             InitializeComponent();
 

@@ -1,4 +1,5 @@
-﻿using LibraryAI;
+﻿using AITimetable.Database;
+using LibraryAI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace AITimetable
         public static List<List<Teacher>> aLstTeachers;
         public static List<Class> lstClasses;
         public static Class SClass = new Class();
+        public static MonCuaKhoi monCuaKhoi = new MonCuaKhoi();
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

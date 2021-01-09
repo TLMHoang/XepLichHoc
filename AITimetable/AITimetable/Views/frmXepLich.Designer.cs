@@ -1,6 +1,6 @@
 ﻿namespace AITimetable
 {
-    partial class frmMain
+    partial class frmXepLich
     {
         /// <summary>
         /// Required designer variable.
